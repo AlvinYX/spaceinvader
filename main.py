@@ -30,7 +30,15 @@ enemyX_change = 2
 enemyY_change = 35
 
 # Bullet Image
-bulletImg = pygame.image.load('bullet')
+
+# Ready - You can't see the bullet on screen.
+# Fire - The bullet is moving, or being shot.
+bulletImg = pygame.image.load('bullet.png')
+bulletX = 0
+bulletY = 480
+bulletX_change = 0
+bulletY_change = 4
+bullet_state = 'ready'
 
 
 def player(x, y):
@@ -39,6 +47,12 @@ def player(x, y):
 
 def enemy(x, y):
     screen.blit(enemyImg, (x, y))
+
+
+def fire_bullet(x, y):
+    global bullet_state
+    bullet_state = 'fire'
+    screen.blit(bulletImg, (x + 16, y + 10))
 
 
 # Game Loop
@@ -59,6 +73,12 @@ while True:
                 playerX_change = -4
             if event.key == pygame.K_RIGHT or event.key == ord('d'):
                 playerX_change = 4
+            if event.key == pygame.K_SPACE:
+                if bullet_state == 'ready':
+                    # Saves the x coordinate of the spaceship only when the space key/ fire key is pressed
+                    bulletX = playerX
+                    fire_bullet(playerX, bulletY)
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or pygame.K_RIGHT or event.key == ord('a') or event.key == ord('d'):
                 playerX_change = 0
@@ -71,7 +91,7 @@ while True:
     elif playerX >= 736:
         playerX = 736
 
-    # Enemy movement
+    # Enemy Movement
 
     enemyX += enemyX_change
     if enemyX <= 0:
@@ -80,6 +100,15 @@ while True:
     elif enemyX >= 736:
         enemyX_change = -2
         enemyY += enemyY_change
+
+    # Bullet Movement
+    if bulletY <= 0:
+        bulletY = 480
+        bullet_state = 'ready'
+
+    if bullet_state == "fire":
+        fire_bullet(bulletX, bulletY)
+        bulletY -= bulletY_change
 
     player(playerX, playerY)
     enemy(enemyX, enemyY)
