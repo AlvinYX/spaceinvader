@@ -128,6 +128,8 @@ while True:
         bullet_state = 'ready'
         score += 1
         print(score)
+        enemyX = random.randint(0, 736)
+        enemyY = random.randint(40, 125)
 
     player(playerX, playerY)
     enemy(enemyX, enemyY)
